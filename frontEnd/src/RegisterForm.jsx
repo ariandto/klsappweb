@@ -1,51 +1,42 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const RegisterForm = () => {
+  const [userid, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Periksa apakah password dan konfirmasi password sama
     if (password !== confirmPassword) {
-      alert('Password dan Konfirmasi Password tidak sesuai');
+      alert('Password and Confirm Password do not match');
       return;
     }
-
+  
     try {
       // Kirim data registrasi ke server
-      const response = await fetch('http://localhost:8081/register', { // Ganti URL dengan endpoint yang sesuai
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+      const response = await axios.post('http://localhost:8081/register', {
+        userid,
+        username,
+        password,
       });
-
-      if (!response.ok) {
-        throw new Error('Registration request failed.');
-      }
-
-      const data = await response.json();
-
-      // Tampilkan pesan sukses atau error
-      if (data.message) {
-        alert(data.message);
+  
+      if (response.status === 200) {
+        const { userId } = response.data;
+        alert(`Registration successful. Your user ID is ${userId}`);
       } else {
-        alert('Registration successful.');
+        alert('Registration request failed.');
       }
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred during registration.');
     }
   };
-
+  
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="col-md-6">
@@ -53,6 +44,17 @@ const RegisterForm = () => {
           <div className="card-body">
             <h2 className="card-title text-center">Register</h2>
             <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="userid">UserID:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="userid"
+                  value={userid}
+                  onChange={(e) => setUserId(e.target.value)}
+                  required
+                />
+              </div>
               <div className="form-group">
                 <label htmlFor="username">Username:</label>
                 <input
@@ -86,7 +88,9 @@ const RegisterForm = () => {
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-primary btn-block">Register</button>
+              <button type="submit" className="btn btn-primary btn-block">
+                Register
+              </button>
             </form>
             <div className="text-center mt-3">
               <Link to="/">Login</Link>

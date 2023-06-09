@@ -12,7 +12,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'klsroute'
+  database: 'klsroute',
 });
 
 db.connect((err) => {
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
   db.query(sql, (err, result) => {
     if (err) {
       console.error('Error executing SQL query: ', err);
-      res.json({ message: 'Error inside server' });
+      res.status(500).json({ message: 'Error inside server' });
     } else {
       res.json(result);
     }
@@ -48,7 +48,7 @@ app.post('/route', (req, res) => {
   db.query(sqlLastId, (err, result) => {
     if (err) {
       console.error('Error executing SQL query: ', err);
-      res.json(err);
+      res.status(500).json(err);
     } else {
       let lastId = 0;
       if (result.length > 0) {
@@ -63,7 +63,7 @@ app.post('/route', (req, res) => {
       db.query(sql, values, (err, result) => {
         if (err) {
           console.error('Error executing SQL query: ', err);
-          res.json(err);
+          res.status(500).json(err);
         } else {
           const insertedData = { id: newId, shiptoname, address, remarks, area };
           res.json(insertedData);
@@ -73,24 +73,8 @@ app.post('/route', (req, res) => {
   });
 });
 
-app.put('/route/:id', (req, res) => {
-  const id = req.params.id;
-  const { shiptoname, address, remarks, area } = req.body;
-  const sql = 'UPDATE route SET shiptoname = ?, address = ?, remarks = ?, area = ? WHERE id = ?';
-  const values = [shiptoname, address, remarks, area, id];
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error executing SQL query: ', err);
-      res.json(err);
-    } else {
-      res.json(result);
-    }
-  });
-});
-
 app.post('/register', (req, res) => {
-  const { username, password } = req.body;
+  const { userid, username, password } = req.body;
 
   // Periksa apakah pengguna sudah terdaftar
   const checkUserQuery = 'SELECT * FROM user WHERE username = ?';
@@ -108,17 +92,34 @@ app.post('/register', (req, res) => {
           res.status(500).json({ error: 'Terjadi kesalahan saat mendaftar.' });
         } else {
           // Simpan data pengguna ke database
-          const insertUserQuery = 'INSERT INTO user (userid, username, userpasswd) VALUES (DEFAULT, ?, ?)';
-          db.query(insertUserQuery, [username, hashedPassword], (err) => {
+          const insertUserQuery = 'INSERT INTO user (userid, username, userpasswd) VALUES (?, ?, ?)';
+          const values = [userid, username, hashedPassword];
+          db.query(insertUserQuery, values, (err, result) => {
             if (err) {
               console.error('Error executing SQL query: ', err);
               res.status(500).json({ error: 'Terjadi kesalahan saat mendaftar.' });
             } else {
-              res.status(200).json({ message: 'Registrasi berhasil.' });
+              res.status(200).json({ message: 'Registrasi berhasil.', userId: result.insertId });
             }
           });
         }
       });
+    }
+  });
+});
+
+app.put('/route/:id', (req, res) => {
+  const id = req.params.id;
+  const { shiptoname, address, remarks, area } = req.body;
+  const sql = 'UPDATE route SET shiptoname = ?, address = ?, remarks = ?, area = ? WHERE id = ?';
+  const values = [shiptoname, address, remarks, area, id];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json(err);
+    } else {
+      res.json(result);
     }
   });
 });
@@ -141,7 +142,7 @@ app.post('/login', (req, res) => {
           console.error('Error comparing passwords: ', err);
           res.status(500).json({ error: 'Terjadi kesalahan saat login.' });
         } else if (isMatch) {
-          res.status(200).json({ message: 'Login berhasil.' });
+          res.status(200).json({ message: 'Login berhasil.', userId: result[0].userid });
         } else {
           res.status(401).json({ error: 'Username atau password salah.' });
         }
@@ -157,7 +158,7 @@ app.delete('/route/:id', (req, res) => {
   db.query(sql, id, (err, result) => {
     if (err) {
       console.error('Error executing SQL query: ', err);
-      res.json(err);
+      res.status(500).json(err);
     } else {
       res.json(result);
     }
