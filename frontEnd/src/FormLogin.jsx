@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const FormLogin = () => {
   const [username, setUsername] = useState('');
@@ -41,7 +42,7 @@ const FormLogin = () => {
               <button type="submit" className="btn btn-primary btn-block">Login</button>
             </form>
             <div className="text-center mt-3">
-              <a href="/register">Sign Up</a>
+              <Link to="/register">Sign Up</Link>
             </div>
           </div>
         </div>

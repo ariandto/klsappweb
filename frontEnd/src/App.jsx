@@ -5,6 +5,8 @@ import Home from './Home';
 import Create from './Create';
 import OrderKeyParsing from './OrderKeyParsing';
 import FormLogin from './FormLogin';
+import RegisterForm from './RegisterForm';
+
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/create" element={<Create />} />
         <Route path="/order-key-parsing" element={<OrderKeyParsing />} />
+        <Route path="/register" element={<RegisterForm />} />
+
       </Routes>
     </Router>
   );
