@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -11,21 +11,16 @@ const FormLogin = () => {
     e.preventDefault();
 
     try {
-      // Kirim permintaan login ke backend
       const response = await axios.post('http://localhost:8081/login', {
         userid,
         username,
         password,
       });
 
-      console.log(response.data); // Output response dari backend
-
-      // Periksa apakah login berhasil atau tidak
       if (response.status === 200) {
-        // Jika login berhasil, arahkan ke halaman home
         window.location.href = '/home';
       } else {
-        alert(response.data.message);
+        alert(response.data.error);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -33,25 +28,27 @@ const FormLogin = () => {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleSubmit(e);
     }
   };
 
-  const getUserByUsername = async () => {
-    try {
-      // Kirim permintaan untuk mendapatkan data pengguna berdasarkan User ID ke backend
-      const response = await axios.get(`http://localhost:8081/user/${userid}`);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8081/user/${userid}`);
 
-      if (response.status === 200) {
-        // Jika berhasil mendapatkan data pengguna, tetapkan username ke dalam state
-        setUsername(response.data.username);
+        if (response.status === 200) {
+          setUsername(response.data.username);
+        }
+      } catch (error) {
+        console.error('Error:', error);
       }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+    };
+
+    fetchData();
+  }, [userid]);
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -77,9 +74,9 @@ const FormLogin = () => {
                   type="text"
                   className="form-control"
                   id="username"
-                  value={username}
+                  value={username} // Menggunakan nilai username yang didapatkan dari server
                   onChange={(e) => setUsername(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                   required
                 />
               </div>

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import OrderKeyParsing from './OrderKeyParsing';
 
+
+
 function Home() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,12 +17,18 @@ function Home() {
     area: ''
   });
   const [editData, setEditData] = useState(null);
+  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const rowsPerPage = 4;
   const paginationRange = 10;
 
+
+  
+
   useEffect(() => {
     fetchData();
+    fetchUserData();
   }, []);
 
   const fetchData = () => {
@@ -28,6 +36,18 @@ function Home() {
       .get('http://localhost:8081/')
       .then((res) => setData(res.data))
       .catch((err) => console.log(err));
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get('http://localhost:8081/user');
+      const userData = response.data;
+      setUsername(userData.username);
+      setIsLoggedIn(true); // Set isLoggedIn to true if user data is successfully fetched
+    } catch (error) {
+      console.log(error);
+      setIsLoggedIn(false); // Set isLoggedIn to false if there's an error
+    }
   };
 
   const filteredData = data.filter((route) => {
@@ -38,6 +58,8 @@ function Home() {
       route.remarks.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+
+
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -128,13 +150,18 @@ function Home() {
             <div className="navbar-collapse">
               <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
-                  <Link to="/" className="nav-link">Home</Link>
+                  <Link to="/" className="nav-link">
+                    Home
+                  </Link>
                 </li>
-                {/* Ubah Link berikut */}
                 <li className="nav-item">
-                  <Link to="/order-key-parsing" className="nav-link">Order Key Parsing</Link>
+                  <Link to="/order-key-parsing" className="nav-link">
+                    Order Key Parsing
+                  </Link>
                 </li>
               </ul>
+              {/* Display username on the navbar */}
+              <span className="navbar-text">{isLoggedIn ? username : ''}</span>
             </div>
           </nav>
         </div>
@@ -241,16 +268,15 @@ function Home() {
                   <button className="page-link" onClick={() => handlePageChange(page)}>
                     {page}
                   </button>
-
                 </li>
               ))}
             </ul>
           )}
-          </div>
-<div className="text-center mt-3">
-  <p className="text-muted">
-    &copy; {new Date().getFullYear()} Budi Ariyanto - E00904 - PT. Kawan Lama Sejahtera
-  </p>
+        </div>
+        <div className="text-center mt-3">
+          <p className="text-muted">
+            &copy; {new Date().getFullYear()} Budi Ariyanto - E00904 - PT. Kawan Lama Sejahtera
+          </p>
         </div>
       </div>
     </div>
