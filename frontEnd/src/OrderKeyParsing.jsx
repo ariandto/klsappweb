@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './OrderKeyParsing.css';
+import './styletailw.css';
 
 function OrderKeyParsing() {
   const [inputText, setInputText] = useState('');

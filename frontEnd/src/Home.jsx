@@ -1,9 +1,10 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import OrderKeyParsing from './OrderKeyParsing';
 
-
+import './styletailw.css';
 
 function Home() {
   const [data, setData] = useState([]);
@@ -19,12 +20,10 @@ function Home() {
   const [editData, setEditData] = useState(null);
   const [username, setUsername] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const rowsPerPage = 4;
   const paginationRange = 10;
-
-
-  
 
   useEffect(() => {
     fetchData();
@@ -43,10 +42,10 @@ function Home() {
       const response = await axios.get('http://localhost:8081/user');
       const userData = response.data;
       setUsername(userData.username);
-      setIsLoggedIn(true); // Set isLoggedIn to true if user data is successfully fetched
+      setIsLoggedIn(true);
     } catch (error) {
       console.log(error);
-      setIsLoggedIn(false); // Set isLoggedIn to false if there's an error
+      setIsLoggedIn(false);
     }
   };
 
@@ -58,8 +57,6 @@ function Home() {
       route.remarks.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-
-
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -141,8 +138,12 @@ function Home() {
 
   const range = [...Array(endPage - startPage + 1)].map((_, i) => startPage + i);
 
+  const handleDarkModeToggle = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
   return (
-    <div className="d-flex vh-100 justify-content-center align-items-center">
+    <div className={`d-flex vh-100 justify-content-center align-items-center ${isDarkMode ? 'dark' : 'light'}`}>
       <div className="w-100 p-3">
         <div className="container">
           {/* Navbar */}
@@ -162,6 +163,10 @@ function Home() {
               </ul>
               {/* Display username on the navbar */}
               <span className="navbar-text">{isLoggedIn ? username : ''}</span>
+              {/* Dark mode toggle button */}
+              <button className="btn btn-secondary" onClick={handleDarkModeToggle}>
+                {isDarkMode ? 'Light' : 'Dark'}
+              </button>
             </div>
           </nav>
         </div>
@@ -176,24 +181,26 @@ function Home() {
           />
         </div>
         <div className="table-responsive">
-          <table className="table table-bordered table-striped">
-            <thead className="thead thead-dark">
-              <tr>
-                <th>ID</th>
-                <th>Ship To Name</th>
-                <th>Address</th>
-                <th>Remarks</th>
-                <th>Area</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRows.map((route) => (
-                <tr key={route.id}>
-                  <td>{route.id}</td>
-                  <td>{route.shiptoname}</td>
-                  <td>{truncateText(route.address, 30)}</td>
-                  <td>{truncateText(route.remarks, 30)}</td>
+  <table className={`table table-bordered table-striped ${isDarkMode ? 'table-dark' : ''}`}>
+    <thead className={`thead ${isDarkMode ? 'thead-dark' : ''}`}>
+      <tr>
+        <th className={`text-center ${isDarkMode ? 'text-white' : ''}`}>ID</th>
+    <th className={`text-center ${isDarkMode ? 'text-white' : ''}`}>Ship To Name</th>
+    <th className={`text-center ${isDarkMode ? 'text-white' : ''}`}>Address</th>
+    <th className={`text-center ${isDarkMode ? 'text-white' : ''}`}>Remarks</th>
+    <th className={`text-center ${isDarkMode ? 'text-white' : ''}`}>Area</th>
+    <th className={`text-center ${isDarkMode ? 'text-white' : ''}`}>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentRows.map((route) => (
+        <tr key={route.id}>
+          <td className={isDarkMode ? 'text-white' : ''}>{route.id}</td>
+          <td className={isDarkMode ? 'text-white' : ''}>{route.shiptoname}</td>
+          <td className={isDarkMode ? 'text-white' : ''}>{truncateText(route.address, 30)}</td>
+          <td className={isDarkMode ? 'text-white' : ''}>{truncateText(route.remarks, 30)}</td>
+          <td className={isDarkMode ? 'text-white' : ''}>{route.area}</td>
+          <td className={isDarkMode ? 'text-white' : ''}></td>
                   <td>{route.area}</td>
                   <td>
                     {editData && editData.id === route.id ? (
@@ -274,8 +281,8 @@ function Home() {
           )}
         </div>
         <div className="text-center mt-3">
-          <p className="text-muted">
-            &copy; {new Date().getFullYear()} Budi Ariyanto - E00904 - PT. Kawan Lama Sejahtera
+          <p className={`text-muted ${isDarkMode ? 'text-white' : ''}`}>
+            &copy; {new Date().getFullYear()} Budi Ariyanto - E00904
           </p>
         </div>
       </div>
