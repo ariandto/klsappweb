@@ -98,7 +98,7 @@ app.post('/register', (req, res) => {
               res.status(500).json({ error: 'Terjadi kesalahan saat mendaftar.' });
             } else {
               // Simpan data pengguna ke database
-              const insertUserQuery = 'INSERT INTO users (username, password) VALUES (?, ?)'; // Hapus "userid" dari query
+              const insertUserQuery = 'INSERT INTO users (username, password) VALUES (?, ?)'; // Hapus "users" dari query
               const values = [username, hashedPassword];
               db.query(insertUserQuery, values, (err, result) => {
                 if (err) {
@@ -106,7 +106,6 @@ app.post('/register', (req, res) => {
                   res.status(500).json({ error: 'Terjadi kesalahan saat mendaftar.' });
                 } else {
                   res.status(200).json({ message: 'Registrasi berhasil.', username: username });
-
                 }
               });
             }
@@ -136,7 +135,7 @@ app.post('/login', (req, res) => {
           console.error('Error comparing passwords: ', err);
           res.status(500).json({ error: 'Terjadi kesalahan saat login.' });
         } else if (isMatch) {
-          res.status(200).json({ message: 'Login berhasil.', userId: result[0].userid });
+          res.status(200).json({ message: 'Login berhasil.', users: result[0].users });
         } else {
           res.status(401).json({ error: 'Username atau password salah.' });
         }
@@ -159,12 +158,29 @@ app.delete('/route/:id', (req, res) => {
   });
 });
 
-app.get('/user', (req, res) => {
-  const userId = req.query.userId; // Mendapatkan userId dari parameter query
+app.put('/route/:id', (req, res) => {
+  const id = req.params.id;
+  const { shiptoname, address, remarks, area } = req.body;
 
-  // Ambil data pengguna dari database berdasarkan userId
-  const getUserQuery = 'SELECT * FROM users WHERE userid = ?'; // Ganti "user" menjadi "users"
-  db.query(getUserQuery, [userId], (err, result) => {
+  const sql = 'UPDATE route SET shiptoname = ?, address = ?, remarks = ?, area = ? WHERE id = ?';
+  const values = [shiptoname, address, remarks, area, id];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error executing SQL query: ', err);
+      res.status(500).json(err);
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+app.get('/user', (req, res) => {
+  const users = req.query.users; // Mendapatkan users dari parameter query
+
+  // Ambil data pengguna dari database berdasarkan users
+  const getUserQuery = 'SELECT * FROM users WHERE users = ?'; // Ganti "user" menjadi "users"
+  db.query(getUserQuery, [users], (err, result) => {
     if (err) {
       console.error('Error executing SQL query: ', err);
       res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data pengguna.' });
