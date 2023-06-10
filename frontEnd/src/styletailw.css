@@ -23,3 +23,12 @@
     color: #adb5bd;
   }
   
+  .table-responsive.dark {
+    border: 1px solid blue;
+  }
+
+  .table-bordered {
+    border-color: blue;
+  }
+  
+  

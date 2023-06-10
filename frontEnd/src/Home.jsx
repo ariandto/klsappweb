@@ -196,7 +196,7 @@ function Home() {
           />
         </div>
         <div className="table-responsive">
-          <table className={`table table-bordered table-striped ${isDarkMode ? 'table-dark' : ''}`}>
+        <table className={`table table-bordered table-striped ${isDarkMode ? 'table-dark' : ''} table-light`}>
             <thead className={`thead ${isDarkMode ? 'thead-dark' : ''}`}>
               <tr>
                 <th className={`text-center ${isDarkMode ? 'text-white' : ''}`}>ID</th>
