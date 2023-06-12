@@ -1,16 +1,19 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './OrderKeyParsing.css';
-import './styletailw.css';
 
 function OrderKeyParsing() {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const outputRef = useRef(null);
+  const [selectedOption, setSelectedOption] = useState('order');
 
-  const mergeStringsAndCopy = async () => {
-    var cleanedString = inputText.replace(/[\s;]/g, '');
-    var characters = cleanedString.split('');
+const mergeStringsAndCopy = async () => {
+  var cleanedString = inputText.trim();
+  var finalString = '';
+
+  if (selectedOption === 'order') {
+    var characters = cleanedString.replace(/\s/g, '').split('');
     var uniqueGroups = [];
     var currentGroup = '';
 
@@ -25,28 +28,36 @@ function OrderKeyParsing() {
       }
     }
 
-    var finalString = '000' + uniqueGroups.join(';000');
-    setOutputText(finalString);
+    finalString = '000' + uniqueGroups.join(';000');
+  } else if (selectedOption === 'article') {
+    finalString = cleanedString.replace(/\s/g, ';');
+  }
 
-    try {
-      await navigator.clipboard.writeText(finalString);
-      alert('Text copied to clipboard!');
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
-  };
+  setOutputText(finalString);
 
-  const clearFields = () => {
+  try {
+    await navigator.clipboard.writeText(finalString);
+    alert('Text copied to clipboard!');
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+};
+
+    const clearFields = () => {
     setInputText('');
     setOutputText('');
   };
 
   const countSemicolons = () => {
     if (outputText.length > 0) {
-      var count = (outputText.match(/;/g) || []).length+1;
+      var count = (outputText.match(/;/g) || []).length + 1;
       return count;
     }
     return 0;
+  };
+
+  const handleOptionChange = (e) => {
+    setSelectedOption(e.target.value);
   };
 
   return (
@@ -94,15 +105,45 @@ function OrderKeyParsing() {
           </p>
         </div>
 
+        <div className="mb-3">
+          <label>Choose an option:</label>
+          <div>
+            <label htmlFor="orderOption">
+              <input
+                type="radio"
+                id="orderOption"
+                name="option"
+                value="order"
+                checked={selectedOption === 'order'}
+                onChange={handleOptionChange}
+              />
+              Order
+            </label>
+          </div>
+          <div>
+            <label htmlFor="articleOption">
+              <input
+                type="radio"
+                id="articleOption"
+                name="option"
+                value="article"
+                checked={selectedOption === 'article'}
+                onChange={handleOptionChange}
+              />
+              Article
+            </label>
+          </div>
+        </div>
+
         <div className="mt-3">
           <Link to="/home" className="btn btn-primary">
             Back to Home
           </Link>
         </div>
         <div className="text-center mt-3">
-  <p className="text-muted">
-    &copy; {new Date().getFullYear()} Budi Ariyanto - E00904 - PT. Kawan Lama Sejahtera
-  </p>
+          <p className="text-muted">
+            &copy; {new Date().getFullYear()} Budi Ariyanto - E00904 - PT. Kawan Lama Sejahtera
+          </p>
         </div>
       </div>
     </div>
