@@ -20,14 +20,23 @@ const RegisterForm = () => {
 
     try {
       // Kirim data registrasi ke server
+<<<<<<< HEAD
       const response = await axios.post(`${apiUrl}/register`, {
         username,
         password,
       });
 
+=======
+      const response = await axios.post('http://localhost:8081/register', {
+        username,
+        password,
+      });
+    
+>>>>>>> 822c350951c8a4c042780fb0d01f7ee9a8e45fad
       if (response.status === 200) {
-        const { userId } = response.data;
+        const { username: userId } = response.data;
         alert(`Registration successful. Your user ID is ${userId}`);
+
       } else {
         alert('Registration request failed.');
       }
@@ -35,6 +44,7 @@ const RegisterForm = () => {
       console.error('Error:', error);
       alert('An error occurred during registration.');
     }
+    
   };
 
   return (

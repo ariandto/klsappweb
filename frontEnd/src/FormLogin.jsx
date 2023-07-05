@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiUrl } from './config';
+
+import './styletailw.css';
 
 const FormLogin = () => {
   const [username, setUsername] = useState('');
@@ -11,7 +13,11 @@ const FormLogin = () => {
     e.preventDefault();
 
     try {
+<<<<<<< HEAD
       const response = await axios.post(`${apiUrl}/login`, {
+=======
+      const response = await axios.post('http://localhost:8081/login', {
+>>>>>>> 822c350951c8a4c042780fb0d01f7ee9a8e45fad
         username,
         password,
       });
@@ -33,6 +39,7 @@ const FormLogin = () => {
     }
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,6 +56,8 @@ const FormLogin = () => {
     fetchData();
   }, []);
 
+=======
+>>>>>>> 822c350951c8a4c042780fb0d01f7ee9a8e45fad
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="col-md-6">
@@ -62,7 +71,11 @@ const FormLogin = () => {
                   type="text"
                   className="form-control"
                   id="username"
+<<<<<<< HEAD
                   value={username} // Using the username value obtained from the server
+=======
+                  value={username}
+>>>>>>> 822c350951c8a4c042780fb0d01f7ee9a8e45fad
                   onChange={(e) => setUsername(e.target.value)}
                   onKeyDown={handleKeyDown}
                   required

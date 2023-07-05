@@ -8,9 +8,20 @@ function OrderKeyParsing() {
   const outputRef = useRef(null);
   const [selectedOption, setSelectedOption] = useState('order');
 
+<<<<<<< HEAD
   const mergeStringsAndCopy = async () => {
     var cleanedString = inputText.trim();
     var finalString = '';
+=======
+const mergeStringsAndCopy = async () => {
+  var cleanedString = inputText.trim();
+  var finalString = '';
+
+  if (selectedOption === 'order') {
+    var characters = cleanedString.replace(/\s/g, '').split('');
+    var uniqueGroups = [];
+    var currentGroup = '';
+>>>>>>> 822c350951c8a4c042780fb0d01f7ee9a8e45fad
 
     if (selectedOption === 'order') {
       var characters = cleanedString.replace(/\s/g, '').split('');
@@ -35,17 +46,26 @@ function OrderKeyParsing() {
       finalString = uniqueWords.join(';');
     }
 
+<<<<<<< HEAD
     setOutputText(finalString);
+=======
+    finalString = '000' + uniqueGroups.join(';000');
+  } else if (selectedOption === 'article') {
+    finalString = cleanedString.replace(/\s/g, ';');
+  }
+>>>>>>> 822c350951c8a4c042780fb0d01f7ee9a8e45fad
 
-    try {
-      await navigator.clipboard.writeText(finalString);
-      alert('Text copied to clipboard!');
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
-  };
+  setOutputText(finalString);
 
-  const clearFields = () => {
+  try {
+    await navigator.clipboard.writeText(finalString);
+    alert('Text copied to clipboard!');
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+};
+
+    const clearFields = () => {
     setInputText('');
     setOutputText('');
   };
