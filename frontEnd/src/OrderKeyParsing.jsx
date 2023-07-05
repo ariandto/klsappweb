@@ -8,42 +8,44 @@ function OrderKeyParsing() {
   const outputRef = useRef(null);
   const [selectedOption, setSelectedOption] = useState('order');
 
-const mergeStringsAndCopy = async () => {
-  var cleanedString = inputText.trim();
-  var finalString = '';
+  const mergeStringsAndCopy = async () => {
+    var cleanedString = inputText.trim();
+    var finalString = '';
 
-  if (selectedOption === 'order') {
-    var characters = cleanedString.replace(/\s/g, '').split('');
-    var uniqueGroups = [];
-    var currentGroup = '';
+    if (selectedOption === 'order') {
+      var characters = cleanedString.replace(/\s/g, '').split('');
+      var uniqueGroups = [];
+      var currentGroup = '';
 
-    for (var i = 0; i < characters.length; i++) {
-      currentGroup += characters[i];
+      for (var i = 0; i < characters.length; i++) {
+        currentGroup += characters[i];
 
-      if (currentGroup.length === 7) {
-        if (!uniqueGroups.includes(currentGroup)) {
-          uniqueGroups.push(currentGroup);
+        if (currentGroup.length === 7) {
+          if (!uniqueGroups.includes(currentGroup)) {
+            uniqueGroups.push(currentGroup);
+          }
+          currentGroup = '';
         }
-        currentGroup = '';
       }
+
+      finalString = '000' + uniqueGroups.join(';000');
+    } else if (selectedOption === 'article') {
+      var words = cleanedString.replace(/\s+/g, ' ').trim().split(' ');
+      var uniqueWords = [...new Set(words)];
+      finalString = uniqueWords.join(';');
     }
 
-    finalString = '000' + uniqueGroups.join(';000');
-  } else if (selectedOption === 'article') {
-    finalString = cleanedString.replace(/\s/g, ';');
-  }
+    setOutputText(finalString);
 
-  setOutputText(finalString);
+    try {
+      await navigator.clipboard.writeText(finalString);
+      alert('Text copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
-  try {
-    await navigator.clipboard.writeText(finalString);
-    alert('Text copied to clipboard!');
-  } catch (err) {
-    console.error('Failed to copy text: ', err);
-  }
-};
-
-    const clearFields = () => {
+  const clearFields = () => {
     setInputText('');
     setOutputText('');
   };

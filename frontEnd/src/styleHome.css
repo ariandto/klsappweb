@@ -1,10 +1,9 @@
-.form-control.responsive {
-    max-width: 100%;
-    width: 100%;
-  }
+/* CSS untuk memberi margin pada navbar */
+.navbar {
+  margin-bottom: 2px;
+}
 
-  .responsive {
-    max-width: 100%;
-    width: 100%;
-  }
-  
+/* CSS untuk memberi margin pada kolom pencarian */
+.form-control.search-input {
+  margin-top: 2px;
+}
