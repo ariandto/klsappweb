@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { apiUrl } from './config';
 
 const FormLogin = () => {
-  const [userid, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -11,8 +11,7 @@ const FormLogin = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8081/login', {
-        userid,
+      const response = await axios.post(`${apiUrl}/login`, {
         username,
         password,
       });
@@ -37,7 +36,7 @@ const FormLogin = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8081/user/${userid}`);
+        const response = await axios.get(`${apiUrl}/user`);
 
         if (response.status === 200) {
           setUsername(response.data.username);
@@ -48,7 +47,7 @@ const FormLogin = () => {
     };
 
     fetchData();
-  }, [userid]);
+  }, []);
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -58,23 +57,12 @@ const FormLogin = () => {
             <h2 className="card-title text-center">Login</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="userid">User ID:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="userid"
-                  value={userid}
-                  onChange={(e) => setUserID(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group">
                 <label htmlFor="username">Username:</label>
                 <input
                   type="text"
                   className="form-control"
                   id="username"
-                  value={username} // Menggunakan nilai username yang didapatkan dari server
+                  value={username} // Using the username value obtained from the server
                   onChange={(e) => setUsername(e.target.value)}
                   onKeyDown={handleKeyDown}
                   required

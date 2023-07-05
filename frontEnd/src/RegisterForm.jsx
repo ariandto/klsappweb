@@ -2,29 +2,29 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import { apiUrl } from './config';
+
 const RegisterForm = () => {
-  const [userid, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Periksa apakah password dan konfirmasi password sama
     if (password !== confirmPassword) {
       alert('Password and Confirm Password do not match');
       return;
     }
-  
+
     try {
       // Kirim data registrasi ke server
-      const response = await axios.post('http://localhost:8081/register', {
-        userid,
+      const response = await axios.post(`${apiUrl}/register`, {
         username,
         password,
       });
-  
+
       if (response.status === 200) {
         const { userId } = response.data;
         alert(`Registration successful. Your user ID is ${userId}`);
@@ -36,7 +36,7 @@ const RegisterForm = () => {
       alert('An error occurred during registration.');
     }
   };
-  
+
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="col-md-6">
@@ -44,17 +44,6 @@ const RegisterForm = () => {
           <div className="card-body">
             <h2 className="card-title text-center">Register</h2>
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="userid">UserID:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="userid"
-                  value={userid}
-                  onChange={(e) => setUserId(e.target.value)}
-                  required
-                />
-              </div>
               <div className="form-group">
                 <label htmlFor="username">Username:</label>
                 <input

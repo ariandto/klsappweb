@@ -1,0 +1,34 @@
+/* styletailw.css */
+
+/* Mode Gelap */
+.dark {
+    background-color: #212529;
+    color: #fff;
+  }
+  
+  .table.dark {
+    background-color: #343a40;
+  }
+  
+  .table.dark th {
+    background-color: #212529;
+    color: #fff; /* Warna teks untuk judul kolom */
+  }
+  
+  .table.dark td {
+    color: #ccc; /* Warna teks untuk isi konten */
+  }
+  
+  .text-muted.dark {
+    color: #adb5bd;
+  }
+  
+  .table-responsive.dark {
+    border: 1px solid blue;
+  }
+
+  .table-bordered {
+    border-color: blue;
+  }
+  
+  
